@@ -1,27 +1,40 @@
+
 import random
 
-print("welcome to number guessing game!")
-num=random.randint(1,50)
+while True:
+    print("Welcome to number guessing game!")
+    num = random.randint(1, 50)
 
-print("guess the correct number(from 1-50) within 8 attempts▪︎")
+    print("Guess the correct number (from 1-50) within 8 attempts▪︎")
 
-attempt=0
-max_attempt=8
-rem_attempts=max_attempt
+    attempt = 0
+    max_attempt = 8
+    rem_attempts = max_attempt
 
-while attempt<max_attempt:
-    guess=int(input("\n Enter the guessed number: "))
-    attempt+=1 
-    rem_attempts-=1
-    if guess>num:
-        print(f"\n Attempt={attempt}")
-        print(f"The guessed number is higher, \n remaining {rem_attempts} attempts.")
-    elif guess<num:
-        print(f"\n Attempt={attempt}")
-        print(f"The guessed number is lower, \n  remaining {rem_attempts} attempts.")
-    elif guess==num:
-        print(f"\n Attempt={attempt}")
-        print(f"Yeah!! its {guess}. \n You guessed the correct number in {attempt} attempts!!")
+    while attempt < max_attempt:
+        try:
+            guess = int(input("\nEnter the guessed number: "))
+        except ValueError:
+            print("⚠️ Please enter a valid number!")
+            continue
+
+        attempt += 1
+        rem_attempts -= 1
+
+        if guess > num:
+            print(f"\nAttempt={attempt}")
+            print(f"The guessed number is higher, \nremaining {rem_attempts} attempts.")
+        elif guess < num:
+            print(f"\nAttempt={attempt}")
+            print(f"The guessed number is lower, \nremaining {rem_attempts} attempts.")
+        else:
+            print(f"\nAttempt={attempt}")
+            print(f"Yeah!! it's {guess}. \nYou guessed the correct number in {attempt} attempts!!")
+            break
+    else:
+        print(f"Attempts={attempt}, The correct number is {num}")
+        
+    play_again = input("\nDo you want to play again? (yes/no): \n").lower()
+    if play_again != 'yes':
+        print("👋 Thanks for playing! Bye!")
         break
-else:
-    print(f"Attempts={rem_attempts}, The correct number is {num}")
