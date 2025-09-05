@@ -1,0 +1,98 @@
+import mysql.connector
+
+def connect_db():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="sampledb1"
+    )
+
+def create_table():
+    mydb = connect_db()
+    mycursor = mydb.cursor()
+    mycursor.execute("drop table if exists tb1")
+    mycursor.execute(
+        "create table tb1 (sno int auto_increment primary key, sname varchar(20) default '-', mno varchar(12) default '-')"
+    )
+    print("Table created.")
+    mycursor.close()
+    mydb.close()
+
+def insert_data():
+    mydb = connect_db()
+    mycursor = mydb.cursor()
+    name = input("Enter name: ")
+    mno = input("Enter mobile no: ")
+    sql = "insert into tb1 (sname, mno) values (%s, %s)"
+    val = (name, mno)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print("Record inserted.")
+    mycursor.close()
+    mydb.close()
+
+def view_data():
+    mydb = connect_db()
+    mycursor = mydb.cursor()
+    mycursor.execute("select * from tb1")
+    rows = mycursor.fetchall()
+    print("\n--- Table Data ---")
+    for row in rows:
+        print(row)
+    mycursor.close()
+    mydb.close()
+
+def update_data():
+    mydb = connect_db()
+    mycursor = mydb.cursor()
+    sno = input("Enter sno to update: ")
+    new_name = input("Enter new name: ")
+    new_mno = input("Enter new mobile no: ")
+    sql = "update tb1 set sname=%s, mno=%s where sno=%s"
+    val = (new_name, new_mno, sno)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print("Record updated.")
+    mycursor.close()
+    mydb.close()
+
+def delete_data():
+    mydb = connect_db()
+    mycursor = mydb.cursor()
+    sno = input("Enter sno to delete: ")
+    sql = "delete from tb1 where sno=%s"
+    val = (sno,)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print("Record deleted.")
+    mycursor.close()
+    mydb.close()
+
+# --- Menu loop ---
+while True:
+    print("\n=== MENU ===")
+    print("1. Create Table")
+    print("2. Insert Data")
+    print("3. View Data")
+    print("4. Update Data")
+    print("5. Delete Data")
+    print("6. Exit")
+    
+    choice = input("Enter choice: ")
+
+    if choice == "1":
+        create_table()
+    elif choice == "2":
+        insert_data()
+    elif choice == "3":
+        view_data()
+    elif choice == "4":
+        update_data()
+    elif choice == "5":
+        delete_data()
+    elif choice == "6":
+        print("Exiting...")
+        break
+    else:
+        print("Invalid choice! Try again.")
