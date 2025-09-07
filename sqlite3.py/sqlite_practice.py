@@ -1,8 +1,8 @@
-import sqlite3
+# import sqlite3
 
-con=sqlite3.connect("testdb.db")
+# con=sqlite3.connect("testdb.db")
 
-cur=con.cursor()
+# cur=con.cursor()
 
 # sql="create table if not exists testTb (id integer primary key autoincrement, name varchar(15) not null, email varchar(25) unique)"
 
@@ -12,6 +12,6 @@ cur=con.cursor()
 # sql="insert into testTb(name,email) values(?,?)"
 # cur.execute(sql,(''))
 
-con.commit()
-cur.close()
-con.close()
+# con.commit()
+# cur.close()
+# con.close()
