@@ -73,7 +73,7 @@ def export_to_json():
     cur.execute(f"DESC {tb}")
     cols = [col[0] for col in cur.fetchall()]
 
-    data_list = [{cols[i]: row[i] for i in range(len(cols))} for row in rows]
+    data_list = [dict(zip(cols, row)) for row in rows]
 
     folder = "json_exports"
     if not os.path.exists(folder):
