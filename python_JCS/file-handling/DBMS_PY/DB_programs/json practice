@@ -7,7 +7,7 @@ def connection():
         host="localhost",
         user="root",
         password="",
-        database="practicedb"
+        database="json_p"
     )
     mycursor = mydb.cursor()
     return mydb, mycursor
@@ -19,7 +19,7 @@ def table():
     column = ["id int auto_increment primary key"]
     for i in range(c_no):
         c_name = input(f"Enter the name for column {i+1}: ").strip()
-        c_type = input(f"Enter the types for {c_name} (e.g. varchar(100), int, date): ").strip()
+        c_type = input(f"Enter the type for {c_name} (e.g. varchar(100), int, date): ").strip()
         column.append(f"{c_name} {c_type}")
     sql = f"CREATE TABLE IF NOT EXISTS {tb}({', '.join(column)})"
     cur.execute(sql)
@@ -47,25 +47,9 @@ def insert():
     cur.close()
     db.close()
 
-def select():
+def export():
     db, cur = connection()
     tb = input("Enter the table name: ").strip()
-    cur.execute(f"SELECT * FROM {tb}")
-    rows = cur.fetchall()
-
-    cur.execute(f"DESC {tb}")
-    cols = [col[0] for col in cur.fetchall()]
-    print(f"Columns: {', '.join(cols)}\n")
-
-    for row in rows:
-        print(row)
-
-    cur.close()
-    db.close()
-
-def export_to_json():
-    db, cur = connection()
-    tb = input("Enter the table name to export: ").strip()
 
     cur.execute(f"SELECT * FROM {tb}")
     rows = cur.fetchall()
@@ -73,34 +57,37 @@ def export_to_json():
     cur.execute(f"DESC {tb}")
     cols = [col[0] for col in cur.fetchall()]
 
-    data_list = [{cols[i]: row[i] for i in range(len(cols))} for row in rows]
+    dl=[{cols[i]:row[i] for i in range(len(cols))} for row in rows]
 
-    folder = "json_exports"
+    folder = input("Enter the folder name to save JSON: ").strip()
     if not os.path.exists(folder):
         os.makedirs(folder)
 
     file_path = os.path.join(folder, f"{tb}.json")
-    with open(file_path, "w") as f:
-        json.dump(data_list, f, indent=4)
+    with open(file_path, 'w') as f:
+        json.dump(dl, f, indent=4)
 
     print(f"✅ Data from '{tb}' exported successfully to '{file_path}'")
     cur.close()
     db.close()
 
-
 while True:
-    print("\n1. Create Table\n2. Insert Data\n3. View Table\n4. Export to JSON\n5. Exit")
-    choice = input("Choose an option: ")
+    print("\n=== MENU ===")
+    print("1. Create Table")
+    print("2. Insert Data")
+    print("3. Export Table to JSON")
+    print("4. Exit")
+
+    choice = input("Enter your choice (1-4): ").strip()
 
     if choice == '1':
         table()
     elif choice == '2':
         insert()
     elif choice == '3':
-        select()
+        export()
     elif choice == '4':
-        export_to_json()
-    elif choice == '5':
+        print("Exiting program...")
         break
     else:
-        print("Invalid choice. Try again!")
+        print("❌ Invalid choice. Try again.")
