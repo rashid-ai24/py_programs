@@ -1,6 +1,7 @@
 import mysql.connector
 import json
 import os
+from tabulate import tabulate
 
 def connection():
     mydb = mysql.connector.connect(
@@ -24,7 +25,7 @@ def table():
     sql = f"CREATE TABLE IF NOT EXISTS {tb}({', '.join(column)})"
     cur.execute(sql)
     db.commit()
-    print(f"✅ Table '{tb}' created successfully!")
+    print(f" Table '{tb}' created successfully!")
     cur.close()
     db.close()
 
@@ -43,7 +44,7 @@ def insert():
     sql = f"INSERT INTO {tb}({','.join(cols)}) VALUES ({p_holder})"
     cur.execute(sql, values)
     db.commit()
-    print(f"✅ Data inserted successfully into '{tb}'!")
+    print(f" Data inserted successfully into '{tb}'!")
     cur.close()
     db.close()
 
@@ -55,13 +56,41 @@ def select():
 
     cur.execute(f"DESC {tb}")
     cols = [col[0] for col in cur.fetchall()]
-    print(f"Columns: {', '.join(cols)}\n")
-
-    for row in rows:
-        print(row)
+    # print(f"Columns: {', '.join(cols)}\n")
+    
+    tbl=tabulate(rows,headers=cols, tablefmt="github")
+    # for row in rows:
+    #     print(row)
 
     cur.close()
     db.close()
+
+def delete():
+    db, cur= connection()
+    tb=input("Enter the table name: ").strip()
+    cur.execute(f"select * from {tb}")
+    rows=cur.fetchall()
+
+    cur.execute("desc {tb}")
+    cols=[col[0] for col in cur.fetchall()]
+
+    tbl=tabulate(rows,headers=cols, tablefmt="github")
+
+    print(tbl)
+
+    d=input("Enter the column name to delete: ")
+    v=input("Enter the value to delete: ")
+    val=(d,v)
+    sql="delete from {tb} where %s=%s"
+
+    cur.execute(sql,val)
+
+    print(f"Successfully deleted. {v} from {d}")
+
+    db.commit()
+    cur.close()
+    db.close()
+
 
 def export_to_json():
     db, cur = connection()
@@ -83,13 +112,13 @@ def export_to_json():
     with open(file_path, "w") as f:
         json.dump(data_list, f, indent=4)
 
-    print(f"✅ Data from '{tb}' exported successfully to '{file_path}'")
+    print(f" Data from '{tb}' exported successfully to '{file_path}'")
     cur.close()
     db.close()
 
 
 while True:
-    print("\n1. Create Table\n2. Insert Data\n3. View Table\n4. Export to JSON\n5. Exit")
+    print("\n1. Create Table\n2. Insert Data\n3. View Table\n4. Export to JSON\n5. Delete Data\n6. Exit")
     choice = input("Choose an option: ")
 
     if choice == '1':
@@ -101,6 +130,8 @@ while True:
     elif choice == '4':
         export_to_json()
     elif choice == '5':
+        delete()
+    elif choice == '6':
         break
     else:
         print("Invalid choice. Try again!")
