@@ -59,6 +59,8 @@ def select():
     # print(f"Columns: {', '.join(cols)}\n")
     
     tbl=tabulate(rows,headers=cols, tablefmt="github")
+    print(tbl)
+    
     # for row in rows:
     #     print(row)
 
