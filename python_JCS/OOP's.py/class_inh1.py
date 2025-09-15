@@ -23,9 +23,15 @@ class dept(student):
         print("Year: ", self.year)
         
         
-
-obj=student(28,'Rashid', 'abc', 18, 'nagercoil')
-obj1=dept('AI&DS', 2)
+r=int(input("Enter the roll no: "))
+n=input("Enter the name: ")
+fn=input("Enter your father name: ")
+a=int(input("Enter your age: "))
+p=input("Enter your place: ")
+obj=student(r,n,fn,a,p)
+d=input("Enter your departement: ")
+y=int(input("Enter the year: "))
+obj1=dept(d,y)
 
 obj.display1()
 obj1.display2()
